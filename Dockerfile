@@ -1,5 +1,6 @@
 FROM centos:7
 
-COPY ./run.sh / && chmod 755 /run.sh
+COPY ./run.sh / 
+RUN chmod 755 /run.sh
 
 CMD /run.sh
