@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: nginx-sidecar
+  name: nginx-sidecar
+spec:
+  replicas: 1
+  selector:
+    app: nginx-sidecar
+    deploymentconfig: nginx-sidecar
+  strategy:
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/container.nginx-sidecar.image.entrypoint: '["container-entrypoint","/bin/sh","-c","$STI_SCRIPTS_PATH/usage"]'
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: nginx-sidecar
+        deploymentconfig: nginx-sidecar
+    spec:
+      containers:
+      - image: 172.30.101.149:5000/myproject/nginx-sidecar@sha256:d2ac7a1784a1a3c15217fbe79072e2a96d710bc6187ccca84f2888f5649f92a0
+        imagePullPolicy: Always
+        name: nginx-sidecar
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /opt/rh/rh-nginx110/root/usr/share/nginx/html
+          name: nginx-sidecar-volume-1
+        - mountPath: /var/opt/rh/rh-nginx110/log/nginx/
+          name: nginx-sidecar-volume-2
+      - image: 172.30.101.149:5000/myproject/curl-sidecar
+        imagePullPolicy: Always
+        name: curl-sidecar
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: nginx-sidecar-volume-1
+      - emptyDir: {}
+        name: nginx-sidecar-volume-2
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - nginx-sidecar
+      from:
+        kind: ImageStreamTag
+        name: nginx-sidecar:latest
+        namespace: myproject
+    type: ImageChange
+status: {}
