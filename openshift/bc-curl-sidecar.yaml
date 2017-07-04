@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  creationTimestamp: null
+  labels:
+    build: curl-sidecar
+  name: curl-sidecar
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: curl-sidecar:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: https://github.com/slallemand/openshift-sidecar.git
+    type: Git
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: centos:7
+        namespace: myproject
+    type: Docker
+  triggers:
+  - github:
+      secret: _GcAJPmwWZunFVRwqNxX
+    type: GitHub
+  - generic:
+      secret: tbJW6Ji1-Sctbk2mi7og
+    type: Generic
+  - type: ConfigChange
+  - imageChange: {}
+    type: ImageChange
+status:
+  lastVersion: 0
