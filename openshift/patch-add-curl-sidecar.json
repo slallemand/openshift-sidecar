@@ -1,0 +1,1 @@
+{ "spec": { "template": { "spec": { "containers": [ { "image": "172.30.101.149:5000/myproject/curl-sidecar", "imagePullPolicy": "Always", "name": "curl-sidecar", "resources": {}, "terminationMessagePath": "/dev/termination-log" } ] } } } }
