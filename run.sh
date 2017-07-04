@@ -1,6 +1,6 @@
 while :;
 do
-	curl -v localhost
+	curl localhost:8080
 	sleep 10
 	echo
 done
